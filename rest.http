@@ -5,4 +5,4 @@ GET http://localhost:3000
 POST  http://localhost:3000/ImagesApi/upload
 
 ###
-GET http://localhost:3000/ImagesApi/images
+GET http://localhost:3000/ImagesApi/imageList

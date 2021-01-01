@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 const ImageSchema = new Schema({
     imageUrl:{
         type: String,
-        required: true,
+        required: true
  
     },
    

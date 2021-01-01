@@ -8,5 +8,5 @@ const storage = multer.diskStorage({
         cb(null, new Date().toISOString()+file.originalname);
     }
 });
-const uploadImg = multer({storage: storage}).single('image');
+const uploadImg = multer({storage: storage})
 module.exports = uploadImg

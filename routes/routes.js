@@ -15,7 +15,7 @@ router.post('/upload',uploadImg.any('image') ,async(req,res,next)=>{
    
    
     const image = new ImageModel({
-       imageUrl: `http://localhost:3000/${files}`
+       imageUrl: `http://localhost:3000/image/${files}`
         
     })
    const savedImage = await image.save()
@@ -41,6 +41,13 @@ router.get('/imageList',async(req,res)=>{
         res.json(images)
     })
 })
+router.get('/image',async(req,res)=>{
+    console.log(req.path)
+    console.log('here')
+    const Image = await ImageModel.find(req.path)
+   res.json(Image)
+   
 
+})
 
 module.exports = router

@@ -1,46 +1,66 @@
 const express = require('express')
 const uploadImg = require('../controllers/image_upload')
 const router = express.Router()
-const ImageModel = require('../models/image_model')
-
-
+const FeedModel = require('../models/feed_model')
+const { handler: encodeImageToBlurhash } = require('../blurhash')
+var sizeOf = require('image-size')
 //post method for uploading images
 router.post('/upload', uploadImg.any('image'), async (req, res, next) => {
 
+    const file = req.files[0].path
+    console.log(req.files[0])
+
+    //Checking if request doesn't contain an image
+    if (!file) {
+        error = new Error('no Images')
+        error.status = 400
+        return next(error)
+    }
+    //getting height and width of image
+     const dimensions =sizeOf(file)
+     const aspectRatio = dimensions.width/dimensions.height
+    //for the blurry placeholder
+    const hashcode = await encodeImageToBlurhash(`http://localhost:3000/${file}`)
+
+    //Trying to save the image
     try {
-        const files = req.files[0].path
-
-        //console.log({file})
-
-
-        const image = new ImageModel({
-            imageUrl: `http://localhost:3000/${files}`
+        const image = new FeedModel({
+            imageUrl: `http://localhost:3000/${file}`,
+            caption: req.body.caption,
+            blurhashcode: hashcode,
+            aspectRatio:aspectRatio
 
         })
         const savedImage = await image.save()
-        res.json(savedImage)
+
+        //Returning the link to new saved image
         //console.log(savedImage)
+        res.json(savedImage)
+
     } catch (error) {
-        const files = req.files
-        if (!files) {
-            error = new Error('no Images')
-            error.status = 400
-            return next('error')
-        }
+        //Resolving error
         next(error)
     }
 })
 
 //get method for getting all the entries in database
 router.get('/imageList', async (req, res) => {
-    ImageModel.find({}, (err, images) => {
-        if (err) {
+
+    //Querying to get list of all the images
+    FeedModel.find({}, (error, images) => {
+
+        if (error) {
             res.send("something went wrong");
-            next();
+            next(error);
         }
-        res.json(images)
+
+        //Sending list of images in JSON format
+        res.json({ images })
     })
+
 })
+
+
 //router.get('/image',async(req,res)=>{
 //  console.log(req.path)
 //    console.log('here')

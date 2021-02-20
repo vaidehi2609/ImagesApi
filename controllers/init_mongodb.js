@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-// to connect to the mongodb databse
+//to connect to the mongodb databse
 mongoose.connect(process.env.MONGODB_URL,
     {
         dbName: process.env.DB_NAME,
@@ -8,7 +8,6 @@ mongoose.connect(process.env.MONGODB_URL,
         useUnifiedTopology: true,
         useFindAndModify: false,
         useCreateIndex: true
-
     })
     .then(() => {
         console.log('mongodb connected')
